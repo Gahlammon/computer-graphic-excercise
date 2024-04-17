@@ -8,11 +8,14 @@
 #include <glm/gtx/quaternion.hpp>
 #include <stdlib.h>
 #include <stdio.h>
+#include <iostream>
+#include <vector>
 #include "constants.h"
 #include "allmodels.h"
 #include "lodepng.h"
 #include "shaderprogram.h"
 #include "camera.h"
+#include "gameObject.h"
 
 void initOpenGLProgram(GLFWwindow* window)
 {
@@ -80,13 +83,23 @@ void closeWindow(GLFWwindow* window)
 }
 
 
-void drawScene(GLFWwindow* window, camera* sceneCamera)
+void drawScene(GLFWwindow* window, camera* sceneCamera, std::vector<gameObject> sceneObjects)
 {
 	glm::mat4 M, V, P;
 
-	M = glm::mat4(1.0f);
-	V = sceneCamera->calculateView();
+	spConstant->use();
+
 	P = sceneCamera->calculatePerspective();
+	glUniformMatrix4fv(spConstant->u("P"), 1, false, glm::value_ptr(P));
+	V = sceneCamera->calculateView();
+	glUniformMatrix4fv(spConstant->u("V"), 1, false, glm::value_ptr(V));
+
+	for (int i = 0; i < sceneObjects.size(); i++)
+	{
+		M = sceneObjects[i].calculatePosition();
+		glUniformMatrix4fv(spConstant->u("M"), 1, false, glm::value_ptr(M));
+		Models::cube.drawWire();
+	}
 }
 
 int main(void)
@@ -97,10 +110,12 @@ int main(void)
 
 	GLFWwindow* window = initWindow((int)resolution.x, (int)resolution.y, swapInterval);
 	camera* sceneCamera = new camera(resolution, glm::vec3(), fov);
+	std::vector<gameObject> objects;
+	objects.push_back(gameObject());
 
 	while (!glfwWindowShouldClose(window))
 	{		
-		drawScene(window, sceneCamera);
+		drawScene(window, sceneCamera, objects);
 		glfwPollEvents();
 	}
 	closeWindow(window);
