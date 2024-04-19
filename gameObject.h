@@ -9,6 +9,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+const glm::vec3 DEFAULT_GAME_OBJECT_POSITION = glm::vec3(0.0f, 0.0f, 0.0f);
+const glm::quat DEFAULT_GAME_OBJECT_ROTATION = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
+const glm::vec3 DEFAULT_GAME_OBJECT_SCALE = glm::vec3(1.0f, 1.0f, 1.0f);
+
 class gameObject
 {
 public:
@@ -16,15 +20,8 @@ public:
 	glm::quat rotation;
 	glm::vec3 scale;
 
-	const glm::vec3 DEFAULT_POSITION = glm::vec3(0.0f);
-	const glm::quat DEFAULT_ROTATION = glm::quat(glm::vec3(0.0f));
-	const glm::vec3 DEFAULT_SCALE = glm::vec3(1.0f);
-
 	glm::mat4 calculatePosition();
 
-	gameObject(glm::vec3 position, glm::quat rotation, glm::vec3 scale);
-	gameObject(glm::vec3 position, glm::quat rotation);
-	gameObject(glm::vec3 position);
-	gameObject();
+	gameObject(glm::vec3 position = DEFAULT_GAME_OBJECT_POSITION, glm::quat rotation = DEFAULT_GAME_OBJECT_ROTATION, glm::vec3 scale = DEFAULT_GAME_OBJECT_SCALE);
 };
 

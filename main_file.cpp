@@ -20,13 +20,13 @@
 void initOpenGLProgram(GLFWwindow* window)
 {
     initShaders();
-	//************Tutaj umieszczaj kod, który należy wykonać raz, na początku programu************	
+
+	spConstant->use();
 }
 
 void freeOpenGLProgram(GLFWwindow* window)
 {
     freeShaders();
-    //************Tutaj umieszczaj kod, który należy wykonać po zakończeniu pętli głównej************	
 }
 
 void error_callback(int error, const char* description)
@@ -83,22 +83,20 @@ void closeWindow(GLFWwindow* window)
 }
 
 
-void drawScene(GLFWwindow* window, camera* sceneCamera, std::vector<gameObject> sceneObjects)
+void drawScene(GLFWwindow* window, camera* sceneCamera, std::vector<gameObject>* sceneObjects)
 {
 	glm::mat4 M, V, P;
-
-	spConstant->use();
 
 	P = sceneCamera->calculatePerspective();
 	glUniformMatrix4fv(spConstant->u("P"), 1, false, glm::value_ptr(P));
 	V = sceneCamera->calculateView();
 	glUniformMatrix4fv(spConstant->u("V"), 1, false, glm::value_ptr(V));
 
-	for (int i = 0; i < sceneObjects.size(); i++)
+	for (int i = 0; i < sceneObjects->size(); i++)
 	{
-		M = sceneObjects[i].calculatePosition();
+		M = sceneObjects->at(i).calculatePosition();
 		glUniformMatrix4fv(spConstant->u("M"), 1, false, glm::value_ptr(M));
-		Models::cube.drawWire();
+		//Models::cube.drawWire();
 	}
 }
 
@@ -109,9 +107,9 @@ int main(void)
 	int swapInterval = 1;
 
 	GLFWwindow* window = initWindow((int)resolution.x, (int)resolution.y, swapInterval);
-	camera* sceneCamera = new camera(resolution, glm::vec3(), fov);
-	std::vector<gameObject> objects;
-	objects.push_back(gameObject());
+	camera* sceneCamera = new camera(resolution, fov, glm::vec3());
+	std::vector<gameObject>* objects = new std::vector<gameObject>();
+	objects->push_back(gameObject());
 
 	while (!glfwWindowShouldClose(window))
 	{		

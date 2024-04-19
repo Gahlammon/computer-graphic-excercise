@@ -19,20 +19,12 @@ glm::mat4 camera::calculatePerspective()
 	return P;
 }
 
-camera::camera(glm::vec2 resolution, glm::vec3 position, glm::quat rotation, float fov, float clippingNear, float clippingFar)
+camera::camera(glm::vec2 resolution, float fov, glm::vec3 position, glm::quat rotation, float clippingNear, float clippingFar)
 {
 	camera::resolution = resolution;
+	camera::fov = fov;
 	camera::position = position;
 	camera::rotation = rotation;
-	camera::fov = fov;
 	camera::clippingNear = clippingNear;
 	camera::clippingFar = clippingFar;
-}
-camera::camera(glm::vec2 resolution, glm::vec3 position, glm::quat rotation, float fov)
-{
-	camera(resolution, position, rotation, fov, DEFAULT_CLIPPING_NEAR, DEFAULT_CLIPPING_FAR);
-}
-camera::camera(glm::vec2 resolution, glm::vec3 position, float fov)
-{
-	camera(resolution, position, DEFAULT_ROTATION, fov, DEFAULT_CLIPPING_NEAR, DEFAULT_CLIPPING_FAR);
 }

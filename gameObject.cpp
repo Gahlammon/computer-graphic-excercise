@@ -17,15 +17,3 @@ gameObject::gameObject(glm::vec3 position, glm::quat rotation, glm::vec3 scale)
 	gameObject::rotation = rotation;
 	gameObject::scale = scale;
 }
-gameObject::gameObject(glm::vec3 position, glm::quat rotation)
-{
-	gameObject(position, rotation, DEFAULT_SCALE);
-}
-gameObject::gameObject(glm::vec3 position)
-{
-	gameObject(position, DEFAULT_ROTATION);
-}
-gameObject::gameObject()
-{
-	gameObject(DEFAULT_POSITION);
-}
