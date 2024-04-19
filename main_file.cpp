@@ -20,7 +20,6 @@
 void initOpenGLProgram(GLFWwindow* window)
 {
     initShaders();
-
 	spConstant->use();
 }
 
@@ -87,6 +86,8 @@ void drawScene(GLFWwindow* window, camera* sceneCamera, std::vector<gameObject>*
 {
 	glm::mat4 M, V, P;
 
+	glClearColor(0, 0, 0, 255);
+
 	P = sceneCamera->calculatePerspective();
 	glUniformMatrix4fv(spConstant->u("P"), 1, false, glm::value_ptr(P));
 	V = sceneCamera->calculateView();
@@ -96,8 +97,10 @@ void drawScene(GLFWwindow* window, camera* sceneCamera, std::vector<gameObject>*
 	{
 		M = sceneObjects->at(i).calculatePosition();
 		glUniformMatrix4fv(spConstant->u("M"), 1, false, glm::value_ptr(M));
-		//Models::cube.drawWire();
+		Models::cube.drawWire();
 	}
+
+	glfwSwapBuffers(window);
 }
 
 int main(void)
@@ -109,7 +112,11 @@ int main(void)
 	GLFWwindow* window = initWindow((int)resolution.x, (int)resolution.y, swapInterval);
 	camera* sceneCamera = new camera(resolution, fov, glm::vec3());
 	std::vector<gameObject>* objects = new std::vector<gameObject>();
-	objects->push_back(gameObject());
+
+	objects->push_back(gameObject(glm::vec3(5.0f, 5.0f, 5.0f)));
+	objects->push_back(gameObject(glm::vec3(3.0f, 5.0f, 5.0f)));
+	objects->push_back(gameObject(glm::vec3(3.0f, 3.0f, 5.0f)));
+	sceneCamera->lookAt(objects->at(0).position);
 
 	while (!glfwWindowShouldClose(window))
 	{		

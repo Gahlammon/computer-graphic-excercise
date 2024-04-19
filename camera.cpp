@@ -19,6 +19,11 @@ glm::mat4 camera::calculatePerspective()
 	return P;
 }
 
+void camera::lookAt(glm::vec3 point, glm::vec3 upward)
+{
+	rotation = glm::lookAt(position, point, upward);
+}
+
 camera::camera(glm::vec2 resolution, float fov, glm::vec3 position, glm::quat rotation, float clippingNear, float clippingFar)
 {
 	camera::resolution = resolution;
