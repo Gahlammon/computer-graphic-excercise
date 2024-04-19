@@ -22,6 +22,10 @@ public:
 
 	glm::mat4 calculatePosition();
 
+	void move(glm::vec3 translation);
+	void rotate(glm::quat rotation);
+	void resize(glm::vec3 scale);
+
 	gameObject(glm::vec3 position = DEFAULT_GAME_OBJECT_POSITION, glm::quat rotation = DEFAULT_GAME_OBJECT_ROTATION, glm::vec3 scale = DEFAULT_GAME_OBJECT_SCALE);
 };
 

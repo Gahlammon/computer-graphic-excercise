@@ -175,6 +175,10 @@ int main(void)
 
 		inputHandling(sceneCamera, deltaTime);
 
+		objects->at(0).move(glm::vec3(deltaTime, 0.0f, 0.0f));
+		objects->at(0).rotate(glm::vec3(0.2f, 0.3f, 0.4f) * deltaTime);
+		objects->at(0).resize(glm::vec3(0.1f, 0.1f, 0.1f) * deltaTime + glm::vec3(1.0f, 1.0f, 1.0f));
+
 		//sceneCamera->lookAt(objects->at(0).position);
 		drawScene(window, sceneCamera, objects);
 		glfwPollEvents();

@@ -26,6 +26,7 @@ public:
 
 	glm::mat4 calculateView();
 	glm::mat4 calculatePerspective();
+
 	void lookAt(glm::vec3 point, glm::vec3 upward = DEFAULT_CAMERA_UPWARD_VECTOR);
 	void move(glm::vec3 vector);
 	void rotate(glm::quat rotation);
