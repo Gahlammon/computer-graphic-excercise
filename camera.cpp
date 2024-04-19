@@ -3,6 +3,7 @@
 glm::mat4 camera::calculateView()
 {
 	glm::mat4 V = glm::toMat4(rotation);
+	V = glm::translate(V, position);
 
 	return V;
 }
@@ -22,6 +23,16 @@ glm::mat4 camera::calculatePerspective()
 void camera::lookAt(glm::vec3 point, glm::vec3 upward)
 {
 	rotation = glm::lookAt(position, point, upward);
+}
+
+void camera::move(glm::vec3 vector)
+{
+	position = position + vector;
+}
+
+void camera::rotate(glm::quat rotation)
+{
+	camera::rotation = camera::rotation * rotation;
 }
 
 camera::camera(glm::vec2 resolution, float fov, glm::vec3 position, glm::quat rotation, float clippingNear, float clippingFar)

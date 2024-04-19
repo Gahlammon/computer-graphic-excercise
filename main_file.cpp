@@ -10,6 +10,9 @@
 #include <stdio.h>
 #include <iostream>
 #include <vector>
+#include <ctime>
+#include <time.h>
+#include <Windows.h>
 #include "constants.h"
 #include "allmodels.h"
 #include "lodepng.h"
@@ -59,6 +62,7 @@ void initGLEWwindow(GLFWwindow* window, int swapInterval)
 GLFWwindow* initWindow(int x, int y, int swapInterval)
 {
 	initGLFW();
+	//ShowCursor(false);
 	
 	GLFWwindow* window = glfwCreateWindow(x, y, "OpenGL", NULL, NULL);
 	if (!window)
@@ -86,6 +90,8 @@ void drawScene(GLFWwindow* window, camera* sceneCamera, std::vector<gameObject>*
 {
 	glm::mat4 M, V, P;
 
+	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_DEPTH_BUFFER_BIT);
 	glClearColor(0, 0, 0, 255);
 
 	P = sceneCamera->calculatePerspective();
@@ -103,6 +109,48 @@ void drawScene(GLFWwindow* window, camera* sceneCamera, std::vector<gameObject>*
 	glfwSwapBuffers(window);
 }
 
+void inputHandling(camera* sceneCamera, float deltaTime)
+{
+	glm::vec3 movement = glm::vec3(0.0f);
+	glm::vec3 rotation = glm::vec3();
+
+	if (GetKeyState('W') & 0x8000)
+	{
+		movement.z += deltaTime;
+	}
+	if (GetKeyState('S') & 0x8000)
+	{
+		movement.z -= deltaTime;
+	}
+	if (GetKeyState('A') & 0x8000)
+	{
+		movement.x += deltaTime;
+	}
+	if (GetKeyState('D') & 0x8000)
+	{
+		movement.x -= deltaTime;
+	}
+	if (GetKeyState('I') & 0x8000)
+	{
+		rotation.x -= deltaTime;
+	}
+	if (GetKeyState('K') & 0x8000)
+	{
+		rotation.x += deltaTime;
+	}
+	if (GetKeyState('J') & 0x8000)
+	{
+		rotation.y += deltaTime;
+	}
+	if (GetKeyState('L') & 0x8000)
+	{
+		rotation.y -= deltaTime;
+	}
+
+	sceneCamera->move(movement * sceneCamera->rotation);
+	sceneCamera->rotate(rotation);
+}
+
 int main(void)
 {
 	glm::vec2 resolution = glm::vec2(640, 640);
@@ -118,8 +166,16 @@ int main(void)
 	objects->push_back(gameObject(glm::vec3(3.0f, 3.0f, 5.0f)));
 	sceneCamera->lookAt(objects->at(0).position);
 
-	while (!glfwWindowShouldClose(window))
-	{		
+	clock_t sceneClock = clock();
+	float deltaTime = 0.0f;
+	while (!glfwWindowShouldClose(window) && !(GetKeyState('Q') & 0x8000))
+	{
+		deltaTime = float(clock() - sceneClock) / CLOCKS_PER_SEC;
+		sceneClock = clock();
+
+		inputHandling(sceneCamera, deltaTime);
+
+		//sceneCamera->lookAt(objects->at(0).position);
 		drawScene(window, sceneCamera, objects);
 		glfwPollEvents();
 	}

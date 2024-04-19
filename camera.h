@@ -27,6 +27,8 @@ public:
 	glm::mat4 calculateView();
 	glm::mat4 calculatePerspective();
 	void lookAt(glm::vec3 point, glm::vec3 upward = DEFAULT_CAMERA_UPWARD_VECTOR);
+	void move(glm::vec3 vector);
+	void rotate(glm::quat rotation);
 
 	camera(glm::vec2 resolution, float fov, glm::vec3 position, glm::quat rotation = DEFAULT_CAMERA_ROTATION, float clippingNear = DEFAULT_CLIPPING_NEAR, float clippingFar = DEFAULT_CLIPPING_FAR);
 };
