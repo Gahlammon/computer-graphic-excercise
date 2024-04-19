@@ -112,7 +112,7 @@ void drawScene(GLFWwindow* window, camera* sceneCamera, std::vector<gameObject>*
 void inputHandling(camera* sceneCamera, float deltaTime)
 {
 	glm::vec3 movement = glm::vec3(0.0f);
-	glm::vec3 rotation = glm::vec3();
+	glm::vec3 rotation = glm::vec3(0.0f);
 
 	if (GetKeyState('W') & 0x8000)
 	{
@@ -140,14 +140,14 @@ void inputHandling(camera* sceneCamera, float deltaTime)
 	}
 	if (GetKeyState('J') & 0x8000)
 	{
-		rotation.y += deltaTime;
+		rotation.y -= deltaTime;
 	}
 	if (GetKeyState('L') & 0x8000)
 	{
-		rotation.y -= deltaTime;
+		rotation.y += deltaTime;
 	}
 
-	sceneCamera->move(movement * sceneCamera->rotation);
+	sceneCamera->move(5.0f * movement * sceneCamera->rotation);
 	sceneCamera->rotate(rotation);
 }
 
