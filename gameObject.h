@@ -8,6 +8,7 @@
 #include <glm/gtx/quaternion.hpp>
 #include <stdlib.h>
 #include <stdio.h>
+#include <memory>
 
 const glm::vec3 DEFAULT_GAME_OBJECT_POSITION = glm::vec3(0.0f, 0.0f, 0.0f);
 const glm::quat DEFAULT_GAME_OBJECT_ROTATION = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
@@ -19,12 +20,16 @@ public:
 	glm::vec3 position;
 	glm::quat rotation;
 	glm::vec3 scale;
+	std::vector<gameObject*> kids;
 
 	glm::mat4 calculatePosition();
 
-	void move(glm::vec3 translation);
-	void rotate(glm::quat rotation);
-	void resize(glm::vec3 scale);
+	void move(const glm::vec3& translation);
+	void rotate(const glm::quat& rotation);
+	void resize(const glm::vec3& scale);
+	void rotateAroundPoint(const glm::quat& rotation, const glm::vec3& point);
+	void adopt(gameObject* child);
+	void getAdopted(gameObject* parent);
 
 	gameObject(glm::vec3 position = DEFAULT_GAME_OBJECT_POSITION, glm::quat rotation = DEFAULT_GAME_OBJECT_ROTATION, glm::vec3 scale = DEFAULT_GAME_OBJECT_SCALE);
 };

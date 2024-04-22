@@ -86,7 +86,7 @@ void closeWindow(GLFWwindow* window)
 }
 
 
-void drawScene(GLFWwindow* window, camera* sceneCamera, std::vector<gameObject>* sceneObjects)
+void drawScene(GLFWwindow* window, camera* sceneCamera, std::vector<gameObject*>* sceneObjects)
 {
 	glm::mat4 M, V, P;
 
@@ -101,7 +101,7 @@ void drawScene(GLFWwindow* window, camera* sceneCamera, std::vector<gameObject>*
 
 	for (int i = 0; i < sceneObjects->size(); i++)
 	{
-		M = sceneObjects->at(i).calculatePosition();
+		M = sceneObjects->at(i)->calculatePosition();
 		glUniformMatrix4fv(spConstant->u("M"), 1, false, glm::value_ptr(M));
 		Models::cube.drawWire();
 	}
@@ -159,12 +159,14 @@ int main(void)
 
 	GLFWwindow* window = initWindow((int)resolution.x, (int)resolution.y, swapInterval);
 	camera* sceneCamera = new camera(resolution, fov, glm::vec3());
-	std::vector<gameObject>* objects = new std::vector<gameObject>();
+	std::vector<gameObject*>* objects = new std::vector<gameObject*>();
 
-	objects->push_back(gameObject(glm::vec3(5.0f, 5.0f, 5.0f)));
-	objects->push_back(gameObject(glm::vec3(3.0f, 5.0f, 5.0f)));
-	objects->push_back(gameObject(glm::vec3(3.0f, 3.0f, 5.0f)));
-	sceneCamera->lookAt(objects->at(0).position);
+	objects->push_back(new gameObject(glm::vec3(5.0f, 5.0f, 5.0f)));
+	objects->push_back(new gameObject(glm::vec3(5.0f, 9.0f, 5.0f)));
+	objects->at(0)->adopt(objects->at(1));
+	objects->push_back(new gameObject(glm::vec3(3.0f, 5.0f, 5.0f)));
+	objects->push_back(new gameObject(glm::vec3(3.0f, 3.0f, 5.0f)));
+	sceneCamera->lookAt(objects->at(0)->position);
 
 	clock_t sceneClock = clock();
 	float deltaTime = 0.0f;
@@ -175,9 +177,9 @@ int main(void)
 
 		inputHandling(sceneCamera, deltaTime);
 
-		objects->at(0).move(glm::vec3(deltaTime, 0.0f, 0.0f));
-		objects->at(0).rotate(glm::vec3(0.2f, 0.3f, 0.4f) * deltaTime);
-		objects->at(0).resize(glm::vec3(0.1f, 0.1f, 0.1f) * deltaTime + glm::vec3(1.0f, 1.0f, 1.0f));
+		objects->at(0)->move(glm::vec3(deltaTime, 0.0f, 0.0f));
+		objects->at(0)->rotate(glm::vec3(0.2f, 0.3f, 0.4f) * deltaTime);
+		objects->at(0)->resize(glm::vec3(0.1f, 0.1f, 0.1f) * deltaTime + glm::vec3(1.0f, 1.0f, 1.0f));
 
 		//sceneCamera->lookAt(objects->at(0).position);
 		drawScene(window, sceneCamera, objects);
