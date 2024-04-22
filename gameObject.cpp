@@ -31,14 +31,8 @@ void gameObject::rotate(const glm::quat& rotation)
 
 void gameObject::rotateAroundPoint(const glm::quat& rotation, const glm::vec3& point)
 {
-	glm::mat4 matrix = glm::translate(glm::mat4(1.0f), point - position) * glm::toMat4(rotation);
-	position += glm::vec3(matrix[3][0], matrix[3][1], matrix[3][2]);
-	gameObject::rotation = rotation * gameObject::rotation;
-	for (int i = 0; i < kids.size(); i++)
-	{
-		kids.at(i)->rotateAroundPoint(rotation, point);
-		kids.at(i)->rotate(rotation);
-	}
+	move((position - point) - ((position - point) * rotation));
+	rotate(rotation);
 }
 
 void gameObject::resize(const glm::vec3& scale)
