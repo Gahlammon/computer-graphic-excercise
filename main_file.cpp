@@ -13,6 +13,7 @@
 #include <ctime>
 #include <time.h>
 #include <Windows.h>
+#include <wtypes.h>
 #include "constants.h"
 #include "allmodels.h"
 #include "lodepng.h"
@@ -59,12 +60,12 @@ void initGLEWwindow(GLFWwindow* window, int swapInterval)
 	initOpenGLProgram(window);
 }
 
-GLFWwindow* initWindow(int x, int y, int swapInterval)
+GLFWwindow* initWindow(int x, int y, int swapInterval, bool fullscreen = false)
 {
 	initGLFW();
-	//ShowCursor(false);
-	
-	GLFWwindow* window = glfwCreateWindow(x, y, "OpenGL", NULL, NULL);
+	ShowCursor(false);
+
+	GLFWwindow* window = glfwCreateWindow(x, y, "OpenGL", fullscreen ? glfwGetPrimaryMonitor() : NULL, NULL);
 	if (!window)
 	{
 		fprintf(stderr, "Unable to create window\n");
@@ -153,11 +154,14 @@ void inputHandling(camera* sceneCamera, float deltaTime)
 
 int main(void)
 {
-	glm::vec2 resolution = glm::vec2(640, 640);
+	RECT desktop;
+	GetWindowRect(GetDesktopWindow(), &desktop);
+
+	glm::vec2 resolution = glm::vec2(desktop.right, desktop.bottom);
 	float fov = glm::radians(70.0f);
 	int swapInterval = 1;
 
-	GLFWwindow* window = initWindow((int)resolution.x, (int)resolution.y, swapInterval);
+	GLFWwindow* window = initWindow(resolution.x, resolution.y, swapInterval, true);
 	camera* sceneCamera = new camera(resolution, fov, glm::vec3());
 	std::vector<gameObject*>* objects = new std::vector<gameObject*>();
 
