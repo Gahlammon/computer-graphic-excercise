@@ -11,9 +11,6 @@ glm::mat4 camera::calculateView()
 glm::mat4 camera::calculatePerspective()
 {
 	float aspect = resolution.x / resolution.y;
-	if (aspect < 1 && aspect != 0) {
-		aspect = 1 / aspect;
-	}
 
 	glm::mat4 P = glm::perspective(fov, aspect, clippingNear, clippingFar);
 
