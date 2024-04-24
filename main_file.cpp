@@ -26,6 +26,7 @@ void initOpenGLProgram(GLFWwindow* window)
     initShaders();
 	glEnable(GL_DEPTH_TEST);
 	spLambert->use();
+	spConstant->use();
 	glUniform4f(spLambert->u("color"), 1.0f, 1.0f, 1.0f, 1.0f);
 }
 
@@ -89,7 +90,7 @@ void closeWindow(GLFWwindow* window)
 }
 
 
-void drawScene(GLFWwindow* window, camera* sceneCamera, std::vector<gameObject*>* sceneObjects)
+void drawScene(GLFWwindow* window, camera* sceneCamera, std::vector<gameObject*>* sceneObjects, bool rendered = true)
 {
 	glm::mat4 M, V, P;
 
@@ -97,15 +98,15 @@ void drawScene(GLFWwindow* window, camera* sceneCamera, std::vector<gameObject*>
 	glClearColor(0, 0, 0, 255);
 
 	P = sceneCamera->calculatePerspective();
-	glUniformMatrix4fv(spLambert->u("P"), 1, false, glm::value_ptr(P));
+	glUniformMatrix4fv(rendered ? spLambert->u("P") : spConstant->u("P"), 1, false, glm::value_ptr(P));
 	V = sceneCamera->calculateView();
-	glUniformMatrix4fv(spLambert->u("V"), 1, false, glm::value_ptr(V));
+	glUniformMatrix4fv(rendered ? spLambert->u("V") : spConstant->u("V"), 1, false, glm::value_ptr(V));
 
 	for (int i = 0; i < sceneObjects->size(); i++)
 	{
 		M = sceneObjects->at(i)->calculatePosition();
-		glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(M));
-		Models::cube.drawSolid();
+		glUniformMatrix4fv(rendered ? spLambert->u("M") : spConstant->u("M"), 1, false, glm::value_ptr(M));
+		rendered ? Models::cube.drawSolid() : Models::cube.drawWire();
 	}
 
 	glfwSwapBuffers(window);
@@ -161,6 +162,8 @@ int main(void)
 	glm::vec2 resolution = glm::vec2(desktop.right, desktop.bottom);
 	float fov = glm::radians(70.0f);
 	int swapInterval = 1;
+	bool viewmodeRendered = true;
+	bool keyPressed = false;
 
 	GLFWwindow* window = initWindow(resolution.x, resolution.y, swapInterval, true);
 	camera* sceneCamera = new camera(resolution, fov, glm::vec3());
@@ -179,6 +182,8 @@ int main(void)
 	}
 	sceneCamera->lookAt(objects->at(0)->position);
 
+	viewmodeRendered ? spLambert->use() : spConstant->use();
+
 	clock_t sceneClock = clock();
 	float deltaTime = 0.0f;
 	while (!glfwWindowShouldClose(window) && !(GetKeyState('Q') & 0x8000))
@@ -187,16 +192,18 @@ int main(void)
 		sceneClock = clock();
 
 		inputHandling(sceneCamera, deltaTime);
+		if ((GetKeyState('Z') & 0x8000) && !keyPressed)
+		{
+			keyPressed = true;
+			viewmodeRendered = !viewmodeRendered;
+			viewmodeRendered ? spLambert->use() : spConstant->use();
+		}
+		if (!(GetKeyState('Z') & 0x8000) && keyPressed)	{keyPressed = false;}
 
 		objects->at(0)->move(glm::vec3(1.0f * deltaTime, 0.0f, 0.0f));
 		objects->at(3)->rotate(glm::vec3(0.0f, 2.0f, 0.0f) * deltaTime);
 
-		//objects->at(0)->move(glm::vec3(deltaTime, 0.0f, 0.0f));
-		//objects->at(0)->rotate(glm::vec3(0.2f, 0.3f, 0.4f) * deltaTime);
-		//objects->at(0)->resize(glm::vec3(0.1f, 0.1f, 0.1f) * deltaTime + glm::vec3(1.0f, 1.0f, 1.0f));
-
-		//sceneCamera->lookAt(objects->at(0)->position);
-		drawScene(window, sceneCamera, objects);
+		drawScene(window, sceneCamera, objects, viewmodeRendered);
 		glfwPollEvents();
 	}
 	closeWindow(window);
