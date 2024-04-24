@@ -31,7 +31,7 @@ void gameObject::rotate(const glm::quat& rotation)
 
 void gameObject::rotateAroundPoint(const glm::quat& rotation, const glm::vec3& point)
 {
-	move((position - point) - ((position - point) * rotation));
+	move(((point - position) - (rotation * (point - position))));
 	rotate(rotation);
 }
 

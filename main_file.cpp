@@ -168,8 +168,15 @@ int main(void)
 
 	objects->push_back(new gameObject(glm::vec3(5.0f, 5.0f, 5.0f)));
 	objects->push_back(new gameObject(glm::vec3(5.0f, 9.0f, 5.0f)));
-	objects->push_back(new gameObject(glm::vec3(3.0f, 5.0f, 5.0f), glm::quat(glm::vec3(45.0f, 0.0f, 90.0f)), glm::vec3(2.5f, 1.0f, 0.5f)));
 	objects->at(0)->adopt(objects->at(1));
+	objects->push_back(new gameObject(glm::vec3(3.0f, 5.0f, 5.0f), glm::quat(glm::vec3(45.0f, 0.0f, 90.0f)), glm::vec3(2.5f, 1.0f, 0.5f)));
+	objects->push_back(new gameObject(glm::vec3(0.0f, -5.0f, 0.0f)));
+	for (int i = 4; i < 4 + 18; i++)
+	{
+		objects->push_back(new gameObject(glm::vec3(10.0f, -5.0f, 0.0f)));
+		objects->at(i)->rotateAroundPoint(glm::quat(glm::vec3(0.0f, glm::radians(20.0f * (i - 4)), 0.0f)), glm::vec3(0.0f, -5.0f, 0.0f));
+		objects->at(3)->adopt(objects->at(i));
+	}
 	sceneCamera->lookAt(objects->at(0)->position);
 
 	clock_t sceneClock = clock();
@@ -182,6 +189,7 @@ int main(void)
 		inputHandling(sceneCamera, deltaTime);
 
 		objects->at(0)->move(glm::vec3(1.0f * deltaTime, 0.0f, 0.0f));
+		objects->at(3)->rotate(glm::vec3(0.0f, 2.0f, 0.0f) * deltaTime);
 
 		//objects->at(0)->move(glm::vec3(deltaTime, 0.0f, 0.0f));
 		//objects->at(0)->rotate(glm::vec3(0.2f, 0.3f, 0.4f) * deltaTime);
