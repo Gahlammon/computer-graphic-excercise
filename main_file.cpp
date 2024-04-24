@@ -24,7 +24,9 @@
 void initOpenGLProgram(GLFWwindow* window)
 {
     initShaders();
-	spConstant->use();
+	glEnable(GL_DEPTH_TEST);
+	spLambert->use();
+	glUniform4f(spLambert->u("color"), 1.0f, 1.0f, 1.0f, 1.0f);
 }
 
 void freeOpenGLProgram(GLFWwindow* window)
@@ -91,20 +93,19 @@ void drawScene(GLFWwindow* window, camera* sceneCamera, std::vector<gameObject*>
 {
 	glm::mat4 M, V, P;
 
-	glClear(GL_COLOR_BUFFER_BIT);
-	glClear(GL_DEPTH_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0, 0, 0, 255);
 
 	P = sceneCamera->calculatePerspective();
-	glUniformMatrix4fv(spConstant->u("P"), 1, false, glm::value_ptr(P));
+	glUniformMatrix4fv(spLambert->u("P"), 1, false, glm::value_ptr(P));
 	V = sceneCamera->calculateView();
-	glUniformMatrix4fv(spConstant->u("V"), 1, false, glm::value_ptr(V));
+	glUniformMatrix4fv(spLambert->u("V"), 1, false, glm::value_ptr(V));
 
 	for (int i = 0; i < sceneObjects->size(); i++)
 	{
 		M = sceneObjects->at(i)->calculatePosition();
-		glUniformMatrix4fv(spConstant->u("M"), 1, false, glm::value_ptr(M));
-		Models::cube.drawWire();
+		glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(M));
+		Models::cube.drawSolid();
 	}
 
 	glfwSwapBuffers(window);
@@ -168,7 +169,6 @@ int main(void)
 	objects->push_back(new gameObject(glm::vec3(5.0f, 5.0f, 5.0f)));
 	objects->push_back(new gameObject(glm::vec3(5.0f, 9.0f, 5.0f)));
 	objects->push_back(new gameObject(glm::vec3(3.0f, 5.0f, 5.0f), glm::quat(glm::vec3(45.0f, 0.0f, 90.0f)), glm::vec3(2.5f, 1.0f, 0.5f)));
-	objects->push_back(new gameObject());
 	objects->at(0)->adopt(objects->at(1));
 	sceneCamera->lookAt(objects->at(0)->position);
 
@@ -187,7 +187,7 @@ int main(void)
 		//objects->at(0)->rotate(glm::vec3(0.2f, 0.3f, 0.4f) * deltaTime);
 		//objects->at(0)->resize(glm::vec3(0.1f, 0.1f, 0.1f) * deltaTime + glm::vec3(1.0f, 1.0f, 1.0f));
 
-		sceneCamera->lookAt(objects->at(0)->position);
+		//sceneCamera->lookAt(objects->at(0)->position);
 		drawScene(window, sceneCamera, objects);
 		glfwPollEvents();
 	}
