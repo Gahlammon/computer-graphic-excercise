@@ -17,30 +17,28 @@ jeśli nie - napisz do Free Software Foundation, Inc., 59 Temple
 Place, Fifth Floor, Boston, MA  02110 - 1301  USA
 */
 
-#ifndef MODEL_H
-#define MODEL_H
-
-
 #include <GL/glew.h>
 #include <vector>
 #include <glm/glm.hpp>
 #include <GLFW/glfw3.h>
 #include "constants.h"
+#include <stdlib.h>
+#include <iostream>
+#include <fstream>
 
 namespace Models {
 
 	class Model {
 		public:
-			int vertexCount;
-			float *vertices;
-			float *normals;
-			float *vertexNormals;
-			float *texCoords;
-			float *colors;
+			float faceCount;
+			float *verticesCompiled;
+			float *normalsCompiled;
+			float *texCoordsCompiled;
+			//float *vertexNormalsCompiled;
+			//float *colors;
 
-			virtual void drawSolid(bool smooth)=0;
-			virtual void drawWire(bool smooth=false);
+			void drawSolid(bool smooth = false);
+			void drawWire(bool smooth = false);
+			void meshImport(std::string path);
 	};
 }
-
-#endif

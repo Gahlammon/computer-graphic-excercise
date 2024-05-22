@@ -21,6 +21,8 @@
 #include "camera.h"
 #include "gameObject.h"
 
+Models::Model temp;
+
 void initOpenGLProgram(GLFWwindow* window)
 {
     initShaders();
@@ -106,7 +108,7 @@ void drawScene(GLFWwindow* window, camera* sceneCamera, std::vector<gameObject*>
 	{
 		M = sceneObjects->at(i)->calculatePosition();
 		glUniformMatrix4fv(rendered ? spLambert->u("M") : spConstant->u("M"), 1, false, glm::value_ptr(M));
-		rendered ? Models::cube.drawSolid() : Models::cube.drawWire();
+		rendered ? temp.drawSolid() : temp.drawWire();
 	}
 
 	glfwSwapBuffers(window);
@@ -158,6 +160,9 @@ int main(void)
 {
 	RECT desktop;
 	GetWindowRect(GetDesktopWindow(), &desktop);
+	Models::Model mesh = Models::Model();
+
+	temp.meshImport("assets/test.obj");
 
 	glm::vec2 resolution = glm::vec2(desktop.right, desktop.bottom);
 	float fov = glm::radians(70.0f);
@@ -194,11 +199,10 @@ int main(void)
 		inputHandling(sceneCamera, deltaTime);
 		if ((GetKeyState('Z') & 0x8000) && !keyPressed)
 		{
-			keyPressed = true;
 			viewmodeRendered = !viewmodeRendered;
 			viewmodeRendered ? spLambert->use() : spConstant->use();
 		}
-		if (!(GetKeyState('Z') & 0x8000) && keyPressed)	{keyPressed = false;}
+		if ((!(GetKeyState('Z') & 0x8000) && keyPressed) || ((GetKeyState('Z') & 0x8000) && !keyPressed)) { keyPressed = !keyPressed; }
 
 		objects->at(0)->move(glm::vec3(1.0f * deltaTime, 0.0f, 0.0f));
 		objects->at(3)->rotate(glm::vec3(0.0f, 2.0f, 0.0f) * deltaTime);
