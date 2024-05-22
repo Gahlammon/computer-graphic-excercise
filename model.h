@@ -31,14 +31,16 @@ namespace Models {
 	class Model {
 		public:
 			float faceCount;
-			float *verticesCompiled;
-			float *normalsCompiled;
-			float *texCoordsCompiled;
+			float* verticesCompiled;
+			float* normalsCompiled;
+			float* texCoordsCompiled;
 			//float *vertexNormalsCompiled;
 			//float *colors;
 
 			void drawSolid(bool smooth = false);
 			void drawWire(bool smooth = false);
 			void meshImport(std::string path);
+
+			Model(std::string path = "");
 	};
 }

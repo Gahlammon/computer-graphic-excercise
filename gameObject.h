@@ -13,6 +13,7 @@
 const glm::vec3 DEFAULT_GAME_OBJECT_POSITION = glm::vec3(0.0f, 0.0f, 0.0f);
 const glm::quat DEFAULT_GAME_OBJECT_ROTATION = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
 const glm::vec3 DEFAULT_GAME_OBJECT_SCALE = glm::vec3(1.0f, 1.0f, 1.0f);
+const Models::Model DEFAULT_GAME_OBJECT_MODEL = Models::Model();
 
 class gameObject
 {
@@ -21,6 +22,7 @@ public:
 	glm::quat rotation;
 	glm::vec3 scale;
 	std::vector<gameObject*> kids;
+	Models::Model mesh;
 
 	glm::mat4 calculatePosition();
 
@@ -31,6 +33,6 @@ public:
 	void adopt(gameObject* child);
 	void getAdopted(gameObject* parent);
 
-	gameObject(glm::vec3 position = DEFAULT_GAME_OBJECT_POSITION, glm::quat rotation = DEFAULT_GAME_OBJECT_ROTATION, glm::vec3 scale = DEFAULT_GAME_OBJECT_SCALE);
+	gameObject(Models::Model mesh = DEFAULT_GAME_OBJECT_MODEL, glm::vec3 position = DEFAULT_GAME_OBJECT_POSITION, glm::quat rotation = DEFAULT_GAME_OBJECT_ROTATION, glm::vec3 scale = DEFAULT_GAME_OBJECT_SCALE);
 };
 

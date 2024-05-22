@@ -146,4 +146,12 @@ namespace Models {
         //    printf("%f %f\n", texCoordsCompiled[i * 2 + 0], texCoordsCompiled[i * 2 + 1]);
         //}
     }
+
+    Model::Model(std::string path)
+    {
+        if (path != "")
+        {
+            meshImport(path);
+        }
+    }
 }

@@ -21,8 +21,6 @@
 #include "camera.h"
 #include "gameObject.h"
 
-Models::Model temp;
-
 void initOpenGLProgram(GLFWwindow* window)
 {
     initShaders();
@@ -108,7 +106,7 @@ void drawScene(GLFWwindow* window, camera* sceneCamera, std::vector<gameObject*>
 	{
 		M = sceneObjects->at(i)->calculatePosition();
 		glUniformMatrix4fv(rendered ? spLambert->u("M") : spConstant->u("M"), 1, false, glm::value_ptr(M));
-		rendered ? temp.drawSolid() : temp.drawWire();
+		rendered ? sceneObjects->at(i)->mesh.drawSolid() : sceneObjects->at(i)->mesh.drawWire();
 	}
 
 	glfwSwapBuffers(window);
@@ -160,9 +158,6 @@ int main(void)
 {
 	RECT desktop;
 	GetWindowRect(GetDesktopWindow(), &desktop);
-	Models::Model mesh = Models::Model();
-
-	temp.meshImport("assets/test.obj");
 
 	glm::vec2 resolution = glm::vec2(desktop.right, desktop.bottom);
 	float fov = glm::radians(70.0f);
@@ -173,15 +168,20 @@ int main(void)
 	GLFWwindow* window = initWindow(resolution.x, resolution.y, swapInterval, true);
 	camera* sceneCamera = new camera(resolution, fov, glm::vec3());
 	std::vector<gameObject*>* objects = new std::vector<gameObject*>();
+	std::vector<Models::Model> meshes;
 
-	objects->push_back(new gameObject(glm::vec3(5.0f, 5.0f, 5.0f)));
-	objects->push_back(new gameObject(glm::vec3(5.0f, 9.0f, 5.0f)));
+	meshes.push_back(Models::Model());
+	meshes.push_back(Models::Model("assets/test.obj"));
+	meshes.push_back(Models::Model("assets/chemirail.obj"));
+
+	objects->push_back(new gameObject(meshes[1], glm::vec3(5.0f, 5.0f, 5.0f)));
+	objects->push_back(new gameObject(meshes[1], glm::vec3(5.0f, 9.0f, 5.0f)));
 	objects->at(0)->adopt(objects->at(1));
-	objects->push_back(new gameObject(glm::vec3(3.0f, 5.0f, 5.0f), glm::quat(glm::vec3(45.0f, 0.0f, 90.0f)), glm::vec3(2.5f, 1.0f, 0.5f)));
-	objects->push_back(new gameObject(glm::vec3(0.0f, -5.0f, 0.0f)));
+	objects->push_back(new gameObject(meshes[2], glm::vec3(3.0f, 5.0f, 5.0f), glm::quat(glm::vec3(45.0f, 0.0f, 90.0f)), glm::vec3(2.5f, 1.0f, 0.5f)));
+	objects->push_back(new gameObject(meshes[0], glm::vec3(0.0f, -5.0f, 0.0f)));
 	for (int i = 4; i < 4 + 18; i++)
 	{
-		objects->push_back(new gameObject(glm::vec3(10.0f, -5.0f, 0.0f)));
+		objects->push_back(new gameObject(meshes[i % 3], glm::vec3(10.0f, -5.0f, 0.0f)));
 		objects->at(i)->rotateAroundPoint(glm::quat(glm::vec3(0.0f, glm::radians(20.0f * (i - 4)), 0.0f)), glm::vec3(0.0f, -5.0f, 0.0f));
 		objects->at(3)->adopt(objects->at(i));
 	}

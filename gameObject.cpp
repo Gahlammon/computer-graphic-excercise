@@ -55,7 +55,7 @@ void gameObject::getAdopted(gameObject* parent)
 	parent->adopt(this);
 }
 
-gameObject::gameObject(glm::vec3 position, glm::quat rotation, glm::vec3 scale) : position(position), rotation(rotation), scale(scale)
+gameObject::gameObject(Models::Model mesh, glm::vec3 position, glm::quat rotation, glm::vec3 scale) : mesh(mesh), position(position), rotation(rotation), scale(scale)
 {
 	kids = std::vector<gameObject*>();
 }
